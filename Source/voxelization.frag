@@ -15,12 +15,12 @@ in GS_OUT {
     vec4 depthCoord; 
 } frag;
 
-float countShadow(float bias)	//bias是偏移值，防止阴影走样
+float countShadow(float bias)	
 {
 	float current=frag.depthCoord.z/frag.depthCoord.w;
 	float shadow = 0.0f;
     int radius = 2;
-	for(int x=-radius;x<=radius;x++)		//这里用的是PCF,采样空间3x3
+	for(int x=-radius;x<=radius;x++)		
 	{
 		for(int y=-radius;y<=radius;y++)
 		{

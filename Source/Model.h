@@ -28,19 +28,16 @@ unsigned int TextureFromFile(int* width_, int* height_, const char* path, const 
 class Model
 {
 public:
-	// 模型数据
-	vector<Texture> textures_loaded;	// 存储所有已加载的模型，防止二次加载
+	vector<Texture> textures_loaded;	
 	vector<Mesh>    meshes;
 	string directory;
 	bool gammaCorrection;
 
-	// 构造函数，需要模型的路径
 	Model(string const& path, bool gamma = false) : gammaCorrection(gamma)
 	{
 		loadModel(path);
 	}
 
-	// 绘出该模型的所有mesh
 	void Draw(Shader& shader)
 	{
 		for (unsigned int i = 0; i < meshes.size(); i++)
@@ -48,13 +45,11 @@ public:
 	}
 
 private:
-	// 利用ASSIMP来加载一个模型，然后把它丢进vector里
 	void loadModel(string const& path)
 	{
-		// 通过ASSIMP读一个文件
 		Assimp::Importer importer;
 		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
-		// 检查错误
+		
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
 			cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << endl;
@@ -65,16 +60,14 @@ private:
 		processNode(scene->mRootNode, scene);
 	}
 
-	// 以递归方式处理节点。处理位于节点处的每个单独的网格，并在其子节点（如果有）上重复此过程。
 	void processNode(aiNode* node, const aiScene* scene)
 	{
-		// 处理位于当前节点的每个网格
 		for (unsigned int i = 0; i < node->mNumMeshes; i++)
 		{
 			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 			meshes.push_back(processMesh(mesh, scene));
 		}
-		// 接下来处理子节点的数据
+	
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
 		{
 			processNode(node->mChildren[i], scene);
@@ -83,13 +76,11 @@ private:
 	}
 
 	Mesh processMesh(aiMesh* mesh, const aiScene* scene)
-	{
-		// 将要使用的数据
+	{		
 		vector<Vertex> vertices;
 		vector<unsigned int> indices;
 		vector<Texture> textures;
 
-		// 遍历网格的每个顶点
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 		{
 			Vertex vertex;
@@ -109,19 +100,19 @@ private:
 				vertex.Normal = vector;
 			}
 
-			if (mesh->mTextureCoords[0]) // 如果这个网格有纹理坐标
+			if (mesh->mTextureCoords[0]) 
 			{
 				glm::vec2 vec;
 
 				vec.x = mesh->mTextureCoords[0][i].x;
 				vec.y = mesh->mTextureCoords[0][i].y;
 				vertex.TexCoords = vec;
-				// tangent
+				
 				vector.x = mesh->mTangents[i].x;
 				vector.y = mesh->mTangents[i].y;
 				vector.z = mesh->mTangents[i].z;
 				vertex.Tangent = vector;
-				// bitangent
+				
 				vector.x = mesh->mBitangents[i].x;
 				vector.y = mesh->mBitangents[i].y;
 				vector.z = mesh->mBitangents[i].z;
@@ -132,15 +123,14 @@ private:
 
 			vertices.push_back(vertex);
 		}
-		// 遍历网格的每个面
 		for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 		{
 			aiFace face = mesh->mFaces[i];
-			// 把面存在vector里
+			
 			for (unsigned int j = 0; j < face.mNumIndices; j++)
 				indices.push_back(face.mIndices[j]);
 		}
-		// 处理材质
+		
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
 		// diffuse 
@@ -159,8 +149,6 @@ private:
 		return Mesh(vertices, indices, textures);
 	}
 
-	// 检查给定类型的所有材质纹理，如果尚未加载，则加载纹理
-	// 返回一个Texture
 	vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName)
 	{
 		vector<Texture> textures;
@@ -168,7 +156,7 @@ private:
 		{
 			aiString str;
 			mat->GetTexture(type, i, &str);
-			// 检查这个纹理之前加载过没
+			
 			bool skip = false;
 			for (unsigned int j = 0; j < textures_loaded.size(); j++)
 			{
@@ -180,7 +168,7 @@ private:
 				}
 			}
 			if (!skip)
-			{   // 如果之前这个纹理没加载过，就加载它
+			{   
 				Texture texture;
 				int width = 0, height = 0;
 				texture.id = TextureFromFile(&width, &height, str.C_Str(), this->directory);
@@ -197,8 +185,8 @@ private:
 };
 
 //models
-vector<Model> models;   //加载进来的模型
-vector<glm::mat4> trans;    //模型对应的model变换矩阵
+vector<Model> models;   
+vector<glm::mat4> trans;   
 
 
 unsigned int TextureFromFile(int * width_, int * height_, const char* path, const string& directory)

@@ -65,86 +65,74 @@ public:
 		ImGui::StyleColorsDark();
 		ImGui_ImplOpenGL3_Init("#version 450");*/
 
-		/* ³õÊ¼²ÎÊı */
 		camera = aCamera;
-		/* ¹æ¶¨ÒõÓ°ÌùÍ¼µÄ·Ö±æÂÊ */
+		
 		shadowMapRes = aShadowMapRes;
 
-		/* ¼ÓÔØ¸÷¸ö×ÅÉ«Æ÷ */
+		string s = "E://a_a_a_a_a_a_Voxel_Cone_Tracing//build//Voxel_Cone_Tracing//";
 
-		string s = "E://a_a_a_a_a_a_Voxel_Cone_Tracing//opengl_voxel_cone_tracing_pku_main//build//Voxel_Cone_Tracing//";
+		standardShader = new Shader((s + "standard.vert").c_str(), (s + "standard.frag").c_str());//æœ€åè¾“å‡ºç»“æœç”¨çš„
+		voxelizationShader = new Shader((s + "voxelization.vert").c_str(), (s + "voxelization.frag").c_str(), (s + "voxelization.geom").c_str());//ä½“ç´ åŒ–ç”¨çš„
+		shadowShader = new Shader((s + "shadow.vert").c_str(), (s + "shadow.frag").c_str());//ç”Ÿæˆæ·±åº¦çº¹ç†ç”¨çš„
 
-		standardShader = new Shader((s + "standard.vert").c_str(), (s + "standard.frag").c_str());//×îºóÊä³ö½á¹ûÓÃµÄ
-		voxelizationShader = new Shader((s + "voxelization.vert").c_str(), (s + "voxelization.frag").c_str(), (s + "voxelization.geom").c_str());//ÌåËØ»¯ÓÃµÄ
-		shadowShader = new Shader((s + "shadow.vert").c_str(), (s + "shadow.frag").c_str());//Éú³ÉÉî¶ÈÎÆÀíÓÃµÄ
-
-	//E:\a_a_a_a_a_a_Voxel_Cone_Tracing\opengl_voxel_cone_tracing_pku_main\build\models
-		string s2 = "E://a_a_a_a_a_a_Voxel_Cone_Tracing//opengl_voxel_cone_tracing_pku_main//build//";
-																						/* ¼ÓÔØÄ£ĞÍ */
+		string s2 = "E://a_a_a_a_a_a_Voxel_Cone_Tracing//build//";
+																						/* åŠ è½½æ¨¡å‹ */
 		std::cout << "Loading objects... " << std::endl;
 		model = new Model(s2 + "models//sponza.obj");
 		std::cout << "Loading done! " << std::endl;
-
-		/* Îª3DÎÆÀí´´½¨Ò»¸öVAO */
+		
 		glGenVertexArrays(1, &texture3DVertexArray);
-		/* ´´½¨Ò»¸öÖ¡»º³å£¬ÎªÒõÓ°ÌùÍ¼×ö×¼±¸ */
+		
 		glGenFramebuffers(1, &depthFramebuffer);
 		glBindFramebuffer(GL_FRAMEBUFFER, depthFramebuffer);
 
-		/* ×¼±¸´Ó¹âÔ´·½Ïò½øĞĞäÖÈ¾£¬ÕâÀïÊÇÔÚ×¼±¸¸÷¸ö¾ØÕó */
 		glm::mat4 viewMatrix = glm::lookAt(lightDirection_, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 		glm::mat4 projectionMatrix = glm::ortho	<float>(-120, 120, -120, 120, -100, 100);
 		depthViewProjectionMatrix = projectionMatrix * viewMatrix;
 
-		/* ¿ªÊ¼Éú³ÉÉî¶ÈÎÆÀí */
 		glGenTextures(1, &depthTexture);
 		glBindTexture(GL_TEXTURE_2D, depthTexture);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, shadowMapRes,
-			shadowMapRes, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);	//ÕâÀïÎÒÃÇÓÃµÄÊÇ24Î»µÄGL_DEPTH_COMPONENT
+			shadowMapRes, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);	
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//ÓÃLINEAR¿ÉÄÜ»áÆ½»¬Ò»µã£¬²»¹ıÕâĞ©ÉèÖÃ²»ÖØÒª
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-		/* ÎÒÃÇ°ÑÕâ¸öÉî¶ÈÎÆÀíÌí¼ÓÎªÖ¡»º³åµÄÉî¶È¸½¼ş */
+		
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthTexture, 0);
-		glDrawBuffer(GL_NONE);	//ÏÔÊ½µØËµÃ÷Ã»ÓĞGL_COLOR_ATTACHMENT,²»äÖÈ¾ÑÕÉ«
+		glDrawBuffer(GL_NONE);	
 
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
 			std::cout << "Error creating framebuffer" << std::endl;
 			return false;
 		}
 
-		glEnable(GL_TEXTURE_3D);//Æô¶¯3DÎÆÀí
-								/* Éú³ÉÒ»¸ö3DÎÆÀí£¬ËüÊÇÓÃÀ´´¢´æÌåËØĞÅÏ¢µÄ */
+		glEnable(GL_TEXTURE_3D);
+								
 		glGenTextures(1, &voxelTexture);
 		glBindTexture(GL_TEXTURE_3D, voxelTexture);
 		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		/*
-		* ÎÒÃÇÓÃÒ»¸öÈ«ÊÇ0µÄÊı×éÀ´×÷ÎªÔ­Ê¼ĞÅÏ¢Ìî³ä3DÎÆÀí£¬´ïµ½Çå¿ÕÎÆÀíµÄĞ§¹û¡£
-		*/
 		int numVoxels = voxelDimensions_ * voxelDimensions_ * voxelDimensions_;
 		GLubyte* data = new GLubyte[numVoxels * 4];
 		memset(data, 0, numVoxels * 4);
-		/* Ê¹ÓÃglTexImage3D¸øÌåËØÎÆÀí·ÖÅäÄÚ´æ£¬²¢ÇÒ°ÑÉÏÃæÄÇ¸ö¿ÕÊı×éµÄ0¿½±´½øÈ¥ */
+		
 		glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA8, voxelDimensions_, voxelDimensions_, voxelDimensions_, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
-		delete[] data;	//ÊÍ·ÅÄÚ´æ
+		delete[] data;	
 
 
-		glGenerateMipmap(GL_TEXTURE_3D);//Éú³ÉMipMap
+		glGenerateMipmap(GL_TEXTURE_3D);
 
-		float size = voxelGridWorldSize_;	//Õû¸ö°üÎ§ºĞÔÚÊÀ½ç×ø±êÏµÀïÃæµÄÊµ¼Ê´óĞ¡
-											/* ¸ù¾İÕâ¸öµÃµ½Èı¸ö·½ÏòµÄÍ¶Ó°¾ØÕó£¬´ı»áÓÃÀ´Ïû³ıÌåËØ»¯¹ı³ÌÖĞ²úÉúµÄ¿×¶´£¬ÒÔµÃµ½¸üºÃµÄÌåËØ»¯Ğ§¹û */
+		float size = voxelGridWorldSize_;	
 		projectionMatrix = glm::ortho(-size * 0.5f, size * 0.5f, -size * 0.5f, size * 0.5f, size * 0.5f, size * 1.5f);
-		projX = projectionMatrix * glm::lookAt(glm::vec3(size, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));//x·½Ïò
-		projY = projectionMatrix * glm::lookAt(glm::vec3(0, size, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, -1));//y·½Ïò
-		projZ = projectionMatrix * glm::lookAt(glm::vec3(0, 0, size), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));//z·½Ïò
+		projX = projectionMatrix * glm::lookAt(glm::vec3(size, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+		projY = projectionMatrix * glm::lookAt(glm::vec3(0, size, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, -1));
+		projZ = projectionMatrix * glm::lookAt(glm::vec3(0, 0, size), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);//FBO½â°ó
-											 //·Ö±ğ»æÖÆÉî¶ÈÎÆÀíºÍÌåËØÎÆÀí
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+											
 		drawDepthTexture();
 		drawVoxelTexture();
 
@@ -156,7 +144,7 @@ public:
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
-		//Ö¡ÂÊ
+		
 		ImGui::Begin("INFORMATION");
 		ImGui::Text("FPS :  %.0fHz ", floor(1 / deltaTime));
 		ImGui::Text("Light Direction:\n(%.1fdegrees,%.1fdegrees)", glm::degrees(glm::atan(lightDirection_.x)), glm::degrees(glm::atan(lightDirection_.z)));
@@ -175,8 +163,7 @@ public:
 		ImGui::End();
 
 		ImGui::Begin("SETTINGS");
-
-		//Ö±½Ó¹âÕÕ
+		
 		ImGui::Text("Direct Light:");
 
 		if (ImGui::Button("1:DIFFUSE"))
@@ -188,8 +175,7 @@ public:
 			showDirectSpecular_ = !showDirectSpecular_;
 		ImGui::SameLine();
 		ImGui::Text(showDirectSpecular_ ? "on" : "off");
-
-		//¼ä½Ó¹ØÕÕ
+		
 		ImGui::Text("Indirect Light:");
 
 		if (ImGui::Button("2:IN DIFFUSE"))
@@ -202,7 +188,6 @@ public:
 		ImGui::SameLine();
 		ImGui::Text(showIndirectSpecular_ ? "on" : "off");
 
-		//»·¾³¹âÕÚ±Î
 		ImGui::Text("Ambient Light:");
 		if (ImGui::Button("5:OCCLUSION"))
 			showAmbientOcclusion = !showAmbientOcclusion;
@@ -254,7 +239,6 @@ public:
 			press5_ = false;
 		}
 
-		//¸Ä±ä¹âÔ´·½Ïò
 		bool changeLightDir = false;
 		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
 			lightDirection_.x += 0.01;
@@ -290,7 +274,7 @@ public:
 		glEnable(GL_DEPTH_TEST);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
-		//ÇĞ»»±³¾°
+		
 		if (ambientFactor < 0.5)
 			glClearColor(0.5, 0.5, 0.5, 1);
 		else
@@ -334,52 +318,40 @@ public:
 
 protected:
 
-
-	/* Éú³ÉÉî¶ÈÎÆÀí */
 	void drawDepthTexture()
 	{
-		/* Ê×ÏÈ°ÑÃæÌŞ³ıºÍÉî¶È²âÊÔ´ò¿ª */
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 
-		/* °ÑÎÒÃÇ¸Õ¸ÕÉú³ÉµÄÄÇ¸öFBO°ó¶¨µ½Ö¡»º³åÉÏ */
 		glBindFramebuffer(GL_FRAMEBUFFER, depthFramebuffer);
 		glViewport(0, 0, shadowMapRes, shadowMapRes);
 		glClearColor(0, 0, 0, 1);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	//Çå¿Õ»º´æ
-
-															/* ¿ªÊ¼äÖÈ¾£¬°ÑÉî¶ÈĞÅÏ¢äÖÈ¾µ½Ö¡»º³åÀï */
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
+															
 		shadowShader->use();
 		glm::mat4 modelMatrix = glm::translate(glm::scale(glm::mat4(1.0f), glm::vec3(0.05f, 0.05f, 0.05f)), glm::vec3(0.0f, 0.0f, 0.0f));
 		shadowShader->setMat4("ModelViewProjectionMatrix", depthViewProjectionMatrix * modelMatrix);
 		model->Draw(*shadowShader);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);	//½â°óFBO
-		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);		//°ÑViewPort»¹Ô­ÖÁ´°¿Ú´óĞ¡
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);	
+		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);		
 	}
-	//Éú³ÉÌåËØÎÆÀí
 	void drawVoxelTexture()
 	{
-		/* ¹ØµôÃæÌŞ³ıºÍÉî¶È²âÊÔ£¬ÒòÎªÎÒÃÇĞèÒªËùÓĞÎïÌåµÄËùÓĞÃæµÄĞÅÏ¢ */
 		glDisable(GL_CULL_FACE);
 		glDisable(GL_DEPTH_TEST);
 
-		/* Ïà¹ØµÄ³õÊ¼»¯²Ù×÷£¬²»×¸ÊöÁË */
 		glViewport(0, 0, voxelDimensions_, voxelDimensions_);
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//glUseProgram(voxelizationShader->ID);	//¼¤»îÌåËØäÖÈ¾µÄ×ÅÉ«Æ÷
 		voxelizationShader->use();
-
-		/* ÉèÖÃÌåËØ»¯µÄ·Ö±æÂÊ */
+		
 		voxelizationShader->setInt("VoxelDimensions", voxelDimensions_);
-		/* ÉèÖÃÈı¸ö·½ÏòµÄÍ¶Ó°¾ØÕó£¬ÎÒÃÇ»áÔÚ¼¸ºÎ×ÅÉ«Æ÷ÖĞ½øĞĞ¼ÆËã£¬²¢Ñ¡ÔñĞ§¹û×îºÃ£¨¿×¶´×îÉÙ£©µÄÄÇ¸ö·½Ïò */
+		
 		voxelizationShader->setMat4("ProjX", projX);
 		voxelizationShader->setMat4("ProjY", projY);
 		voxelizationShader->setMat4("ProjZ", projZ);
 
-
-		/* ¸Õ¸ÕµÃµ½µÄ */
 		glActiveTexture(GL_TEXTURE0 + 5);
 		glBindTexture(GL_TEXTURE_2D, depthTexture);
 		voxelizationShader->setInt("ShadowMap", 5);

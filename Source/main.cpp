@@ -1,7 +1,4 @@
 
-//author : Fukang Chen ,Bowen Li
-//#include <glad/glad.h>
-//#include <gl\glew.h>
 #include "Render.h"
 
 #include <stdio.h>
@@ -30,7 +27,7 @@ Camera camera(glm::vec3(0.0f, 4.0f, 0.0f));
 float lastX = (float)SCR_WIDTH / 2.0;
 float lastY = (float)SCR_HEIGHT / 2.0;
 bool firstMouse = true;
-//切换鼠标控制视角和鼠标操控UI
+
 bool PRESS_SPACE = false;
 bool mouseCursor = false;
 
@@ -81,7 +78,7 @@ int main(void) {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	//窗口大小固定不变
+	
 	//glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "VCT", NULL, NULL);
 
@@ -155,7 +152,7 @@ void processInput(GLFWwindow* window)
 		camera.ProcessKeyboard(UP, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
 		camera.ProcessKeyboard(DOWN, deltaTime);
-	//空格键是否被按下，用来切换输入模式
+	
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !PRESS_SPACE)
 	{
 		PRESS_SPACE = true;

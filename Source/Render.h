@@ -71,9 +71,9 @@ public:
 
 		string s = "E://a_a_a_a_a_a_Voxel_Cone_Tracing//build//Voxel_Cone_Tracing//";
 
-		standardShader = new Shader((s + "standard.vert").c_str(), (s + "standard.frag").c_str());//最后输出结果用的
-		voxelizationShader = new Shader((s + "voxelization.vert").c_str(), (s + "voxelization.frag").c_str(), (s + "voxelization.geom").c_str());//体素化用的
-		shadowShader = new Shader((s + "shadow.vert").c_str(), (s + "shadow.frag").c_str());//生成深度纹理用的
+		standardShader = new Shader((s + "standard.vert").c_str(), (s + "standard.frag").c_str());
+		voxelizationShader = new Shader((s + "voxelization.vert").c_str(), (s + "voxelization.frag").c_str(), (s + "voxelization.geom").c_str());
+		shadowShader = new Shader((s + "shadow.vert").c_str(), (s + "shadow.frag").c_str());
 
 		string s2 = "E://a_a_a_a_a_a_Voxel_Cone_Tracing//build//";
 																						/* 加载模型 */

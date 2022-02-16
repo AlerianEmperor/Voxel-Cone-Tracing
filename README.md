@@ -3,6 +3,7 @@
 Real Time Global Illumination With Voxel Cone Tracing
 
 #Introduction
+
 Voxel Cone Tracing is one of few algorithms that can create real time global ilummination and have a reputation to be notoriously difficult to implement correctly. Voxel Cone Tracing algorithm can be summarize as follow:
 1. voxelize the scene and store all lighting information into a 3D Texture. In Crassin paper, they use a Sparse Voxel Octree(SVO) to save storage space, but that alone is very difficult to implement correctly so I only use 3D Texture, which have different level of Mipmap and can provide what SVO can offer.
 2. Render the scene to a Shadow Buffer.

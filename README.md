@@ -16,8 +16,6 @@ Voxel Cone Tracing is one of few algorithms that can create real time global ilu
 
 I really want to use the old source code form my OpenGL object loading, but Assimp make the code much more cleaner and easier to read so I simp for Assimp. The Assimp code is derived from LearnOpenGL.com.
 
-Voxel Cone Tracing is so hard, Damn it.
-
 Voxel Cone Tracing is the second Herculean task I have ever accomplished, and second in term of scale (Physical based rendering with Lux is the biggest), wink wink.
 
 

@@ -74,7 +74,7 @@ struct Voxel_Cone_Tracing
 
 		//model = Model("E://Models//crytek_sponza//crytek_sponza.obj");
 
-		model = Model("E://a_a_a_a_a_a_Voxel_Cone_Tracing//opengl_voxel_cone_tracing_pku_main//build//models//sponza.obj");
+		model = Model("E://Voxel_Cone_Tracing//models//sponza.obj");
 
 		//init Depth Texture
 

@@ -1,10 +1,6 @@
 #ifndef _MODEL_H_
 #define _MODEL_H_
 
-#define STB_IMAGE_IMPLEMENTATION
-
-#include "stb_image.h"
-
 #include "Mesh.h"
 
 #include <assimp\Importer.hpp>
@@ -14,6 +10,10 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+
+#include "stb_image.h"
+
+#define STB_IMAGE_IMPLEMENTATION
 
 using namespace Assimp;
 

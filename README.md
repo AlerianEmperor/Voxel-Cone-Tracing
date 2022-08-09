@@ -1,5 +1,6 @@
 
 ![voxel_cone_tracing](https://user-images.githubusercontent.com/93391908/183626860-cde20023-95e8-44ca-8b38-88109f01a407.png)
+![voxel_cone_tracing_4](https://user-images.githubusercontent.com/93391908/183627956-2f200bfc-354b-47ae-9fb7-1cac512aed9d.png)
 
 # Voxel-Cone-Tracing
 

@@ -1,9 +1,6 @@
 
 ![voxel_cone_tracing](https://user-images.githubusercontent.com/93391908/183626860-cde20023-95e8-44ca-8b38-88109f01a407.png)
 
-![vct1](https://user-images.githubusercontent.com/93391908/151729015-72fd47c6-2511-4daa-bc71-6314f122057e.png)
-![vct2](https://user-images.githubusercontent.com/93391908/151729020-1ddbf8c4-a46e-4094-93a7-88aff041c7b6.png)
-
 # Voxel-Cone-Tracing
 
 Real Time Global Illumination With Voxel Cone Tracing

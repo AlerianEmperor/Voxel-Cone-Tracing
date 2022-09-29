@@ -1,10 +1,9 @@
+I really really hate people who download the code without staring anything!!! is your star so precious that it is such a waste to star this project, it is so frustrating to see so many people use the code without the proper respect. When I am done with this project, this github will gone forever!
 
 ![voxel_cone_tracing](https://user-images.githubusercontent.com/93391908/183626860-cde20023-95e8-44ca-8b38-88109f01a407.png)
 ![voxel_cone_tracing_4](https://user-images.githubusercontent.com/93391908/183627956-2f200bfc-354b-47ae-9fb7-1cac512aed9d.png)
 ![voxel_cone_tracing_9](https://user-images.githubusercontent.com/93391908/183629603-603b7e61-66f9-439a-b833-834d49677ed0.png)
 ![voxel_cone_tracing_10](https://user-images.githubusercontent.com/93391908/183630118-21f23042-081b-477d-95c0-055900a75fd2.png)
-
-I really really hate people who download the code without staring anything!!! is your star so precious that it is such a waste to star this project, it is so frustrating to see so many people use the code without the proper respect. When I am done with this project, this github will gone forever!
 
 # Voxel-Cone-Tracing
 

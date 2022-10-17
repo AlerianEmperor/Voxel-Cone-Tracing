@@ -23,4 +23,4 @@ I really want to use the old source code form my OpenGL object loading, but Assi
 
 Voxel Cone Tracing is the second Herculean task I have ever accomplished, and second in term of scale (LuxRender is the biggest).
 
-Use Voxel_Cone_Tracing_Final.rar for the best result.
+

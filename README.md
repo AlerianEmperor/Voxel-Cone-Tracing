@@ -6,8 +6,6 @@
 
 Real Time Global Illumination With Voxel Cone Tracing
 
-Hi dfBrandon and  Frankoslaw, thanks for the star! Have a delicious day!
-
 # Introduction
 
 Voxel Cone Tracing is one of few algorithms that can create real time global ilummination and have a reputation to be notoriously difficult to implement correctly. Voxel Cone Tracing algorithm can be summarize as follow:

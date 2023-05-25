@@ -48,7 +48,7 @@ There will be 3 more new projects coming this month, consider starring them as w
 
 Thank you again for starring and following me!
 
-Thank you TrueVegetable, so many stars!
+Thank you TrueVegetable, you have starred so many projects, I am really appreciate!
 
 # Voxel-Cone-Tracing
 Real Time Global Illumination With Voxel Cone Tracing

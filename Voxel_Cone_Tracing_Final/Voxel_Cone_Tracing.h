@@ -87,9 +87,7 @@ struct Voxel_Cone_Tracing
 
 		glGenTextures(1, &Depth_Texture);
 		glBindTexture(GL_TEXTURE_2D, Depth_Texture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, ShadowMapSize, ShadowMapSize, 
-			0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
-
+		
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -109,15 +107,10 @@ struct Voxel_Cone_Tracing
 
 		glGenTextures(1, &VoxelTexture);
 		glBindTexture(GL_TEXTURE_3D, VoxelTexture);
-		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
+		
 		int numVoxels = VoxelDimensions * VoxelDimensions * VoxelDimensions;
 		GLubyte* data = new GLubyte[4 * numVoxels];
-		memset(data, 0, 4 * numVoxels);
-
-		glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA8, VoxelDimensions, VoxelDimensions, VoxelDimensions, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-
+		
 		delete[] data;
 
 		//missing
@@ -167,10 +160,7 @@ struct Voxel_Cone_Tracing
 		VoxelConeTracingShader.setVec3("CameraPosition", camera_Position);
 		VoxelConeTracingShader.setVec3("LightDirection", lightDirection);
 		VoxelConeTracingShader.setFloat("VoxelGridWorldSize", VoxelGridWorldSize);
-		VoxelConeTracingShader.setInt("VoxelDimensions", VoxelDimensions);
-		VoxelConeTracingShader.setFloat("ambientFactor", AmbientFactor);
-		VoxelConeTracingShader.setInt("ShadowMapSize", ShadowMapSize);
-
+		
 		glActiveTexture(GL_TEXTURE0 + 5);
 		glBindTexture(GL_TEXTURE_2D, Depth_Texture);
 		VoxelConeTracingShader.setInt("ShadowMap", 5);
@@ -181,9 +171,7 @@ struct Voxel_Cone_Tracing
 
 		//mat4 mMat = mat4(1.0f);
 		mat4 mMat = glm::translate(glm::scale(glm::mat4(1.0f), glm::vec3(0.05f, 0.05f, 0.05f)), glm::vec3(0.0f, 0.0f, 0.0f));
-		VoxelConeTracingShader.setMat4("ModelMatrix", mMat);
-		VoxelConeTracingShader.setMat4("ModelViewMatrix", vMat * mMat);
-		VoxelConeTracingShader.setMat4("ProjectionMatrix", pMat);
+		
 		VoxelConeTracingShader.setMat4("DepthModelViewProjectionMatrix", DepthViewProjectionMatrix * mMat);
 
 		model.Draw(VoxelConeTracingShader);
@@ -226,13 +214,9 @@ struct Voxel_Cone_Tracing
 		VoxelizeShader.setMat4("ProjX", ProjX);
 		VoxelizeShader.setMat4("ProjY", ProjY);
 		VoxelizeShader.setMat4("ProjZ", ProjZ);
-
-		glActiveTexture(GL_TEXTURE0 + 5);
-		glBindTexture(GL_TEXTURE_2D, Depth_Texture);
+		
 		VoxelizeShader.setInt("ShadowMap", 5);
-
-		glBindImageTexture(6, VoxelTexture, 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA8);
-		VoxelizeShader.setInt("VoxelTexture", 6);
+	
 
 		//change mMat to scale, rotate, translate
 		//not use at this time
@@ -240,11 +224,9 @@ struct Voxel_Cone_Tracing
 		mat4 mMat = glm::translate(glm::scale(glm::mat4(1.0f), glm::vec3(0.05f, 0.05f, 0.05f)), glm::vec3(0.0f, 0.0f, 0.0f));
 		VoxelizeShader.setMat4("ModelMatrix", mMat);
 		VoxelizeShader.setMat4("DepthModelViewProjectionMatrix", DepthViewProjectionMatrix * mMat);
-		VoxelizeShader.setInt("ShadowMapSize", ShadowMapSize);
-
+		
 		model.Draw(VoxelizeShader);
-		glActiveTexture(GL_TEXTURE6);
-		glBindTexture(GL_TEXTURE_3D, VoxelTexture);
+		
 		glGenerateMipmap(GL_TEXTURE_3D);
 		glViewport(0, 0, screen_width, screen_height);
 	}

@@ -64,9 +64,7 @@ void main()
 	camera.MovementSpeed = 5.0f;
 	camera.MouseSensitivity = 0.5f;
 	Voxel_Cone_Tracing voxel_cone_tracing(SCREEN_WIDTH, SCREEN_HEIGHT, window);// , &camera);
-
-	voxel_cone_tracing.init_voxel_cone_tracing();
-
+	
 	//voxel_cone_tracing.camera = &camera;
 	//voxel_cone_tracing.window = window;
 

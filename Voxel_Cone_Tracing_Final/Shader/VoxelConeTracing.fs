@@ -58,10 +58,6 @@ vec3 Cone_Directions[6] = vec3[]
 
 vec4 SampleVoxels(vec3 World_Position, float lod)
 {
-	vec3 Voxel_Texture_UV = World_Position / (VoxelGridWorldSize * 0.5f);
-
-	Voxel_Texture_UV = Voxel_Texture_UV * 0.5f + 0.5f;//vec3(0.5f);
-	
 	return textureLod(VoxelTexture, Voxel_Texture_UV, lod);
 }
 
@@ -94,12 +90,9 @@ vec4 Voxel_Cone_Tracing(vec3 direction, float tanHalfAngle)
 	while(dist < MAX_DISTANCE && alpha < MAX_ALPHA)
 	{
 		float diameter = max(voxelWorldSize, 2.0f * tanHalfAngle * dist);
-		float lodLevel = log2(diameter / voxelWorldSize);
-		vec4 voxelColor = SampleVoxels(startPos + dist * direction, lodLevel);
-
-		color += (1.0f - alpha) * voxelColor.rgb;
+		
 		occlusion += ((1.0f - alpha) * voxelColor.a) / (1.0f + 0.03f * diameter);
-		alpha += (1.0f - alpha) * voxelColor.a;
+		
 		dist += diameter;
 	}
 
@@ -117,12 +110,6 @@ vec3 CalcBumpNormal(mat3 TBN)
 
 	//float bump_strength = 2.0f;
 
-	vec3 t1 = normalize(vec3(1.0f, 0.0f, dx));
-	vec3 t2 = normalize(vec3(0.0f, 1.0f, dy));
-
-	//t1 x t2 = (dx, dy, 1.0f);
-
-	vec3 bump_normal = normalize(cross(t1, t2));
 	
 	return normalize(TBN * bump_normal); 
 }
@@ -131,7 +118,7 @@ vec3 CalcBumpNormal(mat3 TBN)
 
 float PCF_Shadow_Mapping(float bias)
 {
-	float current_Depth = Position_depth.z / Position_depth.w;
+	
 	float shadow = 0.0f;
 
 	int radius = 2;
@@ -144,8 +131,7 @@ float PCF_Shadow_Mapping(float bias)
 		{
 			//vec2 offset = vec2(inv_shadow_size * x, inv_shadow_size * y);
 
-			vec2 offset = vec2(1.0f / ShadowMapSize * x, 1.0f / ShadowMapSize * y);
-
+			
 			float closest_depth = texture(ShadowMap, vec2(Position_depth.xy + offset)).r;
 
 			if(current_Depth - bias <= closest_depth)
@@ -193,11 +179,7 @@ void main()
 
 	vec4 inDirectDiffuse = vec4(0.0f);
 
-	for(int i = 0; i < NUM_CONES; ++i)
-	{
-		inDirectDiffuse += Cone_Weights[i] * Voxel_Cone_Tracing(normalize(TBN * Cone_Directions[i]), 0.577);//tan(60 / 2)
-	}
-
+	
 	float occlusion = 1.0f - inDirectDiffuse.a;
 
 	//inDirectDiffuse = ShowIndirectDiffuse > 0.5f ? inDirectDiffuse
@@ -210,18 +192,11 @@ void main()
 	specColor = length(specColor.gb) > 0.0f ? specColor : specColor.rrra;
 
 	vec3 SpecularReflect = normalize(reflect(-L, N));
-	float spec = pow(max(dot(E, SpecularReflect), 0.0f), Shininess);
-	vec3 directSpecular = vec3(spec * shadow_value);
-	//directSpecular = ShowSpecular > 0.5f ? directSpecular : vec3(0.0f)
+	
 
 	vec3 inDirectReflect = normalize(reflect(-E, N));
 	vec4 inDirectSpecular = Voxel_Cone_Tracing(inDirectReflect, 0.07f);//0.105);//reflect cone width = 12 degree
 	                                                                   //half cone = 6 dgree
-																	   //tan(6) = 0.105
-	float specularOcclusion = 1.0f - inDirectSpecular.a;
-
-	vec3 specularReflection = (inDirectSpecular.rgb + specularOcclusion * directSpecular.rgb) * specColor.rgb;
-
 	vec3 AmbientLight = ambientFactor * matColor.rgb * occlusion;
 
 	color = vec4(AmbientLight + DiffuseReflection + specularReflection, alpha);

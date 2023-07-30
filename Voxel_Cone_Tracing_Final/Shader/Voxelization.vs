@@ -15,9 +15,6 @@ out Vertex
 void main()
 {
 	TexCoord = tex;
-	DepthCoord = DepthModelViewProjectionMatrix * vec4(position, 1.0f);
-	DepthCoord.xyz = DepthCoord.xyz * 0.5f + vec3(0.5f);
-
 	gl_Position = ModelMatrix * vec4(position, 1.0f);
 }
 
